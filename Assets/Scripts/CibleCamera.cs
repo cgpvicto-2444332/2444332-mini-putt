@@ -1,4 +1,4 @@
-// Code emprunté à Alexandre Ouellet via : https://cours-alexandre-ouellet.github.io/jeux-3d/abc/gestion-camera/
+// Code emprunté de Alexandre Ouellet via : https://cours-alexandre-ouellet.github.io/jeux-3d/abc/gestion-camera/
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -37,30 +37,16 @@ public class CibleCamera : MonoBehaviour
     [SerializeField, Tooltip("La caméra qui suit la cible")]
     private CinemachineCamera cameraGeree;
 
-    // Variables privées pour la gestion du déplacement
-    /// <summary>
-    /// Le deplacement actuel de la caméra
-    /// </summary>
     private Vector2 deplacement;
 
-    /// <summary>
-    /// La rotation actuelle de la caméra
-    /// </summary>
     private float rotation;
 
-    /// <summary>
-    /// L'inclinaison actuelle de la caméra
-    /// </summary>
     private float inclinaison;
 
-    /// <summary>
-    /// Le zoom actuel de la caméra
-    /// </summary>
     private float zoom;
 
     private void Start()
     {
-        // Action de déplacement
         InputAction actionDeplacement = controles.actions.FindAction("player/DeplacerCamera");
         actionDeplacement.performed += CommencerDeplacement;
         actionDeplacement.canceled += TerminerDeplacement;
@@ -90,7 +76,6 @@ public class CibleCamera : MonoBehaviour
     {
         if (controles == null || controles.actions == null) { return; }
 
-        // Retire les callbacks des actions pour éviter les fuites de mémoire
         InputAction actionDeplacement = controles.actions.FindAction("player/DeplacerCamera");
         actionDeplacement.performed -= CommencerDeplacement;
         actionDeplacement.canceled -= TerminerDeplacement;
@@ -108,28 +93,16 @@ public class CibleCamera : MonoBehaviour
         actionZoom.canceled -= TerminerZoom;
     }
 
-    #region Déplacement
-    /// <summary>
-    /// Commence le déplacement de la caméra
-    /// </summary>
-    /// <param name="contexte">Information du callback de l'action</param>
     private void CommencerDeplacement(InputAction.CallbackContext contexte)
     {
         deplacement = vitesseDeplacement * contexte.ReadValue<Vector2>();
     }
 
-    /// <summary>
-    /// Termine le déplacement de la caméra
-    /// </summary>
-    /// <param name="contexte">Information du callback de l'action</param>
     private void TerminerDeplacement(InputAction.CallbackContext contexte)
     {
         deplacement = Vector2.zero;
     }
 
-    /// <summary>
-    /// Gère le déplacement de la caméra en fonction de l'input du joueur et des limites du volume de la caméra
-    /// </summary>
     private void DeplacerCamera()
     {
         if (deplacement.sqrMagnitude > 0.0f)
@@ -146,59 +119,32 @@ public class CibleCamera : MonoBehaviour
             }
         }
     }
-    #endregion
 
-    #region Rotation
-    /// <summary>
-    /// Commence la rotation de la caméra
-    /// </summary>
-    /// <param name="contexte">Information du callback de l'action</param>
     private void CommencerRotation(InputAction.CallbackContext contexte)
     {
         rotation = vitesseRotation * contexte.ReadValue<float>();
     }
 
-    /// <summary>
-    /// Termine la rotation de la caméra
-    /// </summary>
-    /// <param name="contexte">Information du callback de l'action</param>
     private void TerminerRotation(InputAction.CallbackContext contexte)
     {
         rotation = 0.0f;
     }
 
-    /// <summary>
-    /// Effectue la rotation de la caméra
-    /// </summary>
     private void TournerCamera()
     {
-        // Important de tourner dans l'espace du monde pour ne pas avoir d'interaction avec l'inclinaison de la caméra
         transform.Rotate(new Vector3(0.0f, rotation * Time.deltaTime, 0.0f), Space.World);
     }
-    #endregion
 
-    #region Inclinaison 
-    /// <summary>
-    /// Commence l'inclinaison de la caméra
-    /// </summary>
-    /// <param name="contexte">Information du callback de l'action</param>
     private void CommencerInclinaison(InputAction.CallbackContext contexte)
     {
         inclinaison = vitesseInclinaison * contexte.ReadValue<float>();
     }
 
-    /// <summary>
-    /// Termine l'inclinaison de la caméra
-    /// </summary>
-    /// <param name="contexte">Information du callback de l'action</param>
     private void TerminerInclinaison(InputAction.CallbackContext contexte)
     {
         inclinaison = 0.0f;
     }
 
-    /// <summary>
-    /// Applique l'inclinaison de la caméra en fonction de l'input du joueur et des limites d'inclinaison
-    /// </summary>
     private void InclinerCamera()
     {
         float angle = (transform.localEulerAngles.x + inclinaison * Time.deltaTime) % 360;
@@ -208,30 +154,17 @@ public class CibleCamera : MonoBehaviour
             transform.Rotate(new Vector3(inclinaison * Time.deltaTime, 0.0f, 0.0f), Space.Self);
         }
     }
-    #endregion
 
-    #region Zoom
-    /// <summary>
-    /// Commence le zoom de la caméra
-    /// </summary>
-    /// <param name="contexte">Information du callback de l'action</param>
     private void CommencerZoom(InputAction.CallbackContext contexte)
     {
         zoom = vitesseZoom * contexte.ReadValue<float>();
     }
 
-    /// <summary>
-    /// Termine le zoom de la caméra    
-    /// </summary>
-    /// <param name="contexte">Information du callback de l'action</param>
     private void TerminerZoom(InputAction.CallbackContext contexte)
     {
         zoom = 0.0f;
     }
 
-    /// <summary>
-    /// Applique le zoom de la caméra en fonction de l'input du joueur
-    /// </summary>
     private void ZoomerCamera()
     {
         CinemachinePositionComposer positionComposer = cameraGeree.GetComponent<CinemachinePositionComposer>();
@@ -243,5 +176,4 @@ public class CibleCamera : MonoBehaviour
             positionComposer.TargetOffset = offsetCamera;
         }
     }
-    #endregion
 }
