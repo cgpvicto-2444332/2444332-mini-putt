@@ -1,5 +1,6 @@
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GestionnaireCameraJeu : MonoBehaviour
 {
@@ -20,9 +21,20 @@ public class GestionnaireCameraJeu : MonoBehaviour
     [SerializeField, Tooltip("Priorité de la caméra inactive")]
     private int prioriteInactive = 0;
 
+    [SerializeField]
+    private Transform balle;
+
     private void Start()
     {
         ActiverCameraLibre();
+    }
+
+    private void Update()
+    {
+        if (Keyboard.current != null && Keyboard.current.enterKey.wasPressedThisFrame)
+        {
+            ActiverCameraSuiviBalle(balle);
+        }
     }
 
     public void ActiverCameraLibre()
