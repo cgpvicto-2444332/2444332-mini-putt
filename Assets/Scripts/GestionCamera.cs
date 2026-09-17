@@ -31,7 +31,7 @@ public class GestionnaireCameraJeu : MonoBehaviour
 
     private void Update()
     {
-        if (Keyboard.current != null && Keyboard.current.enterKey.wasPressedThisFrame)
+        if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
         {
             ActiverCameraSuiviBalle(balle);
         }
@@ -43,22 +43,15 @@ public class GestionnaireCameraJeu : MonoBehaviour
         cameraSuiviBalle.Priority = prioriteInactive;
 
         if (controleCameraLibre != null)
-        {
             controleCameraLibre.enabled = true;
-        }
     }
 
     public void ActiverCameraSuiviBalle(Transform balle)
     {
-        cameraSuiviBalle.Follow = balle;
-        cameraSuiviBalle.LookAt = balle;
-
         cameraSuiviBalle.Priority = prioriteActive;
         cameraLibre.Priority = prioriteInactive;
 
         if (controleCameraLibre != null)
-        {
             controleCameraLibre.enabled = false;
-        }
     }
 }
